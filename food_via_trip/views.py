@@ -12,7 +12,9 @@ from food_via_trip.serializers import LocationSerailizer
 # Create your views here.
 
 class LocationInfoList(APIView):
-    def get(self, request):
+    
+    @staticmethod
+    def get():
         locations = Location.objects.all()
         serializer = LocationSerailizer(locations, many=True)
         return Response(serializer.data)
@@ -20,9 +22,16 @@ class LocationInfoList(APIView):
 
 class GenerateLocationInfo(APIView):
     @staticmethod
-    def post(self, request):
+    def post(request):
+
         """
         Find location info by address
+            ---
+            parameters:
+               - name: address
+                 description: your location address
+                 required: true
+
         """
         if not request.data.get('address'):
             return Response("Please provide address!", status=status.HTTP_400_BAD_REQUEST)
@@ -49,8 +58,9 @@ class GenerateLocationInfo(APIView):
 
 
 class PopulateRestaurantWithFare(APIView):
+
     @staticmethod
-    def get(self, request, location_id):
+    def get(request, location_id):
         print location_id
         if not location_id:
             return Response("Please provide id!", status=status.HTTP_400_BAD_REQUEST)
