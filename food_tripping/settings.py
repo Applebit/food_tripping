@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'food_via_trip',
     'rest_framework',
+    'rest_framework_swagger'
 ]
 
 MIDDLEWARE = [

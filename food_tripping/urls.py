@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Food Tripping API')
 
 urlpatterns = [
     url(r'^', include('food_via_trip.urls')),
-    #url(r'docs/', include('rest_framework_swagger.urls')),
+    url(r'^$', schema_view),
 ]
