@@ -20,7 +20,7 @@ class LocationInfoList(APIView):
 
 class GenerateLocationInfo(APIView):
     @staticmethod
-    def post(request):
+    def post(self, request):
         """
         Find location info by address
         """
@@ -50,7 +50,7 @@ class GenerateLocationInfo(APIView):
 
 class PopulateRestaurantWithFare(APIView):
     @staticmethod
-    def get(request, location_id):
+    def get(self, request, location_id):
         print location_id
         if not location_id:
             return Response("Please provide id!", status=status.HTTP_400_BAD_REQUEST)

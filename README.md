@@ -5,8 +5,8 @@ Django rest Api for finding narest 10 best restaurants with rating along with ub
 
 # Software Requirement
 
-Django
-Django Rest Framework
+Django,
+Django Rest Framework,
 Django Rest Swagger
 
 # Uses
