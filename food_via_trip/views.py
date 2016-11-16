@@ -12,12 +12,11 @@ from food_via_trip.serializers import LocationSerailizer
 # Create your views here.
 
 class LocationInfoList(APIView):
-    
-    @staticmethod
-    def get():
+
+    def get(self, request):
         locations = Location.objects.all()
         serializer = LocationSerailizer(locations, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GenerateLocationInfo(APIView):
@@ -37,7 +36,8 @@ class GenerateLocationInfo(APIView):
             return Response("Please provide address!", status=status.HTTP_400_BAD_REQUEST)
         address = request.data.get('address')
         if Location.objects.filter(address=address).exists():
-            return Response('already exist', status=status.HTTP_302_FOUND)
+            location = Location.objects.get(address=address)
+            return Response({'location_id' : location.location_id}, status=status.HTTP_200_OK)
         locationFromAddress = settings.GLOBAL_SETTINGS['LOCATION_BASE_URI'] + '?query=' + address
         header = {"User-agent": "curl/7.43.0", "Accept": "application/json",
                   "user_key": settings.GLOBAL_SETTINGS['USER_KEY']}
@@ -47,7 +47,7 @@ class GenerateLocationInfo(APIView):
 
         # not storing entire data of the response just storing useful one
         resp_json_payload = response.json()['location_suggestions'][0]
-        data = {'id': uuid.uuid4(), 'entity_id': resp_json_payload['entity_id'],
+        data = {'location_id': str(uuid.uuid4()), 'entity_id': resp_json_payload['entity_id'],
                 'entity_type': resp_json_payload['entity_type'], 'lat': resp_json_payload['latitude'],
                 'long': resp_json_payload['longitude'], 'address': address}
         serializer = LocationSerailizer(data=data)
@@ -64,9 +64,9 @@ class PopulateRestaurantWithFare(APIView):
         print location_id
         if not location_id:
             return Response("Please provide id!", status=status.HTTP_400_BAD_REQUEST)
-        if not Location.objects.filter(id=location_id).exists():
+        if not Location.objects.filter(location_id=location_id).exists():
             return Response("ID doesn't exists", status=status.HTTP_404_NOT_FOUND)
-        query = Location.objects.get(id=location_id)
+        query = Location.objects.get(location_id=location_id)
         entity_id = query.entity_id
         entity_type = query.entity_type
         start_lat = query.lat
